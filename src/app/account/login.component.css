@@ -1,0 +1,4 @@
+.mat-login mat-form-field + mat-form-field + mat-form-field-lable {
+    margin-left: 8px;
+    color: white;
+  }

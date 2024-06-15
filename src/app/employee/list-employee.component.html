@@ -1,0 +1,145 @@
+<div class="container data-container mat-elevation-z8">
+    <div class="h2">
+        <p>Users</p>
+    </div>
+    <div class="loading-shade" *ngIf="isLoadingResults||isRateLimitReached">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        <div class="rate-limit-reached" *ngIf="isRateLimitReached">
+            Rate limit has been reached. It will be reset in one minute
+        </div>
+
+    </div>
+
+    <div *ngIf="notification" class="alert alert-success alert-dismissible fade show mt-sm-auto" role="alert">
+        <strong>{{notification}}</strong>
+        <button type="button" class="close " data-bs-dismiss="alert" aria-label="Close">
+            <div aria-hidden="true">&times;</div>
+        </button>
+    </div>
+    <div *ngIf="err" class="alert alert-danger alert-dismissible fade show mt-sm-auto" role="alert">
+        <strong>{{err}}</strong>
+        <button type="button" class="close mr-0" data-bs-dismiss="alert" aria-label="Close">
+            <div aria-hidden="true">&times;</div>
+        </button>
+    </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" (click)="addEmployee()"
+        data-bs-target="#staticBackdrop">
+        Add New User
+    </button>
+
+    <div class="table-container mt-4">
+        <mat-form-field class="m-1 col-md-4">
+            <mat-label><strong>Search</strong></mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input />
+        </mat-form-field>
+
+        <table mat-table [dataSource]="employees" matSortActive="firstName" matSortDisableClear matSortDirection="asc"
+            class="table table-striped  table-responsive-sm" matSort>
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th class="d-inline" mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="firstname">
+                <th *matHeaderCellDef mat-sort-header>FirstName</th>
+                <td class="td" *matCellDef="let user">{{user.firstName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastname">
+                <th *matHeaderCellDef>Last Name</th>
+                <td class="td" *matCellDef="let user">{{user.lastName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+                <th *matHeaderCellDef>email</th>
+                <td class="td" *matCellDef="let user">{{user.email}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="phoneNumber">
+                <th *matHeaderCellDef>Phone Number</th>
+                <td class="td" *matCellDef="let user">{{user.phoneNumber}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th *matHeaderCellDef>Actions</th>
+                <td>
+                    <mat-cell *matCellDef="let user">
+                        <button type="button" (click)="updateEmp(user.id);" class="btn btn-primary"
+                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-pencil-square"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                <path fill-rule="evenodd"
+                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                            </svg>
+                        </button>
+                        <form method="post" class="mx-3" (ngSubmit)="deleteUser(user.id)">
+                            <span id="confirmDeleteSpan_{{user.id}}" style="display:none">
+                                <div class="d-inline-flex">
+                                    <span class="text-danger font-weight-bold">Are you sure you want to delete this
+                                        user?</span><br />
+                                    <button type="submit" class="btn btn-danger mx-2">Yes</button>
+                                    <a class="btn btn-primary" (click)="confirmDelete(user.id, false)">No</a>
+                                </div>
+                            </span>
+                            <span id="deleteSpan_{{user.id}}">
+                                <a (click)="confirmDelete(user.id, true)" class="">
+                                    <svg width="16" height="16" fill="RED" class="bi bi-trash mx-3" viewBox="0 0 16 16">
+                                        <path
+                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                        <path fill-rule="evenodd"
+                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                    </svg>
+                                </a>
+                            </span>
+                        </form>
+                    </mat-cell>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+            </tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" [length]="resultLength"
+            aria-label="Select page of share management API results"></mat-paginator>
+    </div>
+</div>
+
+<div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content bg-light">
+            <div class="modal-header bg-primary">
+                <p class="modal-title h3 " id="staticBackdropLabel">{{ModalTitle}}</p>
+
+                <button type="button" class="btn-close" (click)="closeClick()" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <app-add-employee (notify)="notificationHandler($event)" [webUser]="webUser" 
+                    *ngIf="AddEmployeeComponent"></app-add-employee>
+                <app-edit-employee (notify)="notificationHandler($event)" [model]="editEmp" 
+                    *ngIf="EditEmployeeComponent">
+                </app-edit-employee>
+                <div *ngIf="err">There is a problem with the service. Please try again later.</div>
+            </div>
+        </div>
+    </div>
+</div>

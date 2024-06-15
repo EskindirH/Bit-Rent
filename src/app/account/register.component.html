@@ -1,0 +1,135 @@
+<div class="row mx-auto bg-light">
+    <div *ngIf="notification" class="alert alert-success alert-dismissible fade show mt-sm-auto" role="alert">
+      <strong>{{notification}}</strong>
+      <button type="button" class="close " data-bs-dismiss="alert" aria-label="Close">
+        <div aria-hidden="true">&times;</div>
+      </button>
+    </div>
+    <div *ngIf="err" class="alert alert-danger alert-dismissible fade show mt-sm-auto" role="alert">
+      <strong>{{err}}</strong>
+      <button type="button" class="close mr-0" data-bs-dismiss="alert" aria-label="Close">
+        <div aria-hidden="true">&times;</div>
+      </button>
+    </div>
+    <form class="h6 pt-3" [formGroup]="addUserForm" (ngSubmit)="addUser()">
+  
+      <div class="row">
+        <mat-form-field class="col-md-5">
+          <mat-label class=" text-black">First Name</mat-label>
+          <input formControlName="firstName" id="firstName" matInput class="col-md-10 text-dark"
+            placeholder="First Name" />
+          <mat-error *ngIf="Fname?.invalid &&(Fname?.dirty||Fname?.touched)">
+            <div *ngIf="Fname?.errors?.['minlength']||Fname?.errors?.['maxlength']">
+              First name length must be at least 3 and at most 30 characters long
+            </div>
+            <div *ngIf="Fname?.errors?.['required']">First name is required</div>
+          </mat-error>
+          <mat-error class="text-danger help-block"
+            *ngIf="Fname?.errors?.['forbiddenName'] &&Fname?.touched && !Fname?.errors?.['required']">
+            First letter must be capitalized and the remaining must be alphabets
+          </mat-error>
+        </mat-form-field>
+      </div>
+  
+      <div class="row">
+        <mat-form-field class="col-md-5">
+          <mat-label class="text-black">Last Name</mat-label>
+          <input formControlName="lastName" id="lastName" matInput class="col-md-6 text-dark" placeholder="Last Name" />
+          <mat-error *ngIf="Lname?.invalid &&(Lname?.dirty||Lname?.touched)">
+            <div *ngIf="Lname?.errors?.['minlength']||Lname?.errors?.['maxlength']">
+              Last name length must be at least 3 and at most 30 characters long
+            </div>
+            <div *ngIf="Lname?.errors?.['required']">Last name is required</div>
+          </mat-error>
+  
+          <mat-error class="text-danger help-block"
+            *ngIf="Lname?.errors?.['forbiddenName'] && Lname?.touched && !Lname?.errors?.['required']">
+            First letter must be capitalized and the remaining must be alphabets
+          </mat-error>
+        </mat-form-field>
+  
+      </div>
+  
+      <div class="row">
+        <mat-form-field class="col-md-5">
+          <mat-label class="text-black">Enter your email</mat-label>
+          <input formControlName="email" id="email" matInput class="text-dark" placeholder="email@example.com" />
+          <mat-error *ngIf="(Email?.dirty||Email?.touched)" class="text-danger help-block">
+            <div *ngIf="Email?.errors?.['required']">Email is required</div>
+          </mat-error>
+          <mat-error *ngIf="Email?.invalid &&Email?.touched && !Email?.errors?.['required']"
+            class="text-danger help-block">
+            <div>Email is invalid</div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field class="col-md-5">
+          <mat-label class="text-black">Phone</mat-label>
+          <input formControlName="phone" id="phone" matInput class="text-dark" placeholder="+2519--------" />
+          <mat-error *ngIf="Phone?.invalid &&(Phone?.dirty||Phone?.touched)">
+            <div *ngIf="Phone?.errors?.['required']">Phone is required</div>
+          </mat-error>
+          <mat-error *ngIf="Phone?.errors?.['forbiddenPhone'] && Phone?.touched && !Phone?.errors?.['required']"
+            class="text-danger help-block">
+            Country code must start with +251 followed by 9
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row" id="sel">
+        <select class="col-md-4" formControlName="discriminator" id="discriminator">
+          <option [value]="null">--Select Type--</option>
+          <option value="Customer" name="Customer">
+            Customer
+          </option>
+          <option value="Owner" name="Owner" >
+            Owner
+          </option>
+        </select>        
+      </div>
+
+      <div class="row" >
+        <mat-form-field class="col-md-5">
+          <mat-label class="text-black">Enter Account Number</mat-label>
+          <input formControlName="accNumber" id="accNumber" matInput class="text-dark" placeholder="Account" />
+          
+          
+        </mat-form-field>
+      </div>
+  
+      <div class="row">
+        <mat-form-field class="col-md-5">
+          <mat-label class="text-black">Password</mat-label>
+          <input matInput type="password" formControlName="password" id="password" class="col-md-9"
+            placeholder="password" />
+          <mat-error *ngIf="Password?.invalid &&(Password?.dirty||Password?.touched)" class="text-danger help-block">
+            <div *ngIf="Password?.errors?.['required']">Password is required</div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-md-5">
+          <mat-label class="text-black">Confirm Password</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" id="confirmPassword" class="col-md-9"
+            placeholder="Confirm Password" />
+          <mat-error *ngIf="ConfirmPassword?.dirty||ConfirmPassword?.touched">
+            <div *ngIf="ConfirmPassword?.errors?.['required']">Confirm Password is required</div>
+          </mat-error>
+          <div
+            *ngIf="addUserForm?.errors?.['passwordMatch'] && ConfirmPassword?.touched && !ConfirmPassword?.errors?.['required']"
+            class="text-danger help-block">
+            Password and Confirm Password do not match
+          </div>
+        </mat-form-field>
+      </div>
+  
+      <div class="form-row mt-2">
+        <button type="submit" [disabled]="!addUserForm.valid" class="col-md-5 btn shadow-lg btn-primary">
+          Save
+        </button>
+        <input type="reset" value="Cancel" class="col-md-5 btn btn-warning shadow-lg offset-2" />
+      </div>
+    </form>
+  </div>

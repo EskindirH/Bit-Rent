@@ -1,0 +1,48 @@
+<div class="row mx-auto bg-light">
+    <div *ngIf="notification" class="alert alert-success alert-dismissible fade show mt-sm-auto" role="alert">
+        <strong>{{notification}}</strong>
+        <button type="button" class="close " data-bs-dismiss="alert" aria-label="Close">
+            <div aria-hidden="true">&times;</div>
+        </button>
+    </div>
+    <div *ngIf="err" class="alert alert-danger alert-dismissible fade show mt-sm-auto" role="alert">
+        <strong>{{err}}</strong>
+        <button type="button" class="close mr-0" data-bs-dismiss="alert" aria-label="Close">
+            <div aria-hidden="true">&times;</div>
+        </button>
+    </div>
+
+    <mat-form-field class="col-md-5">
+        <mat-label class=" text-black">Price</mat-label>
+        <input #form [(ngModel)]="model.price" [value]="model.price" matInput class="col-md-10 text-dark"
+            placeholder="Price" required="Price is required" />
+    </mat-form-field>
+
+    <mat-form-field class="col-md-5">
+        <mat-label class=" text-black">Discription</mat-label>
+        <input #form [(ngModel)]="model.description" [value]="model.description" matInput
+            class="col-md-10 text-dark" placeholder="Discription" required="Discription is required" />
+    </mat-form-field> 
+
+    <div class="col-md-5">
+        <label class=" text-black">Available</label>
+        <input #form [(ngModel)]="model.isAvailable" [value]="model.isAvailable" type="checkbox" 
+           class="col-md-10 form-check-input" placeholder="Discription" required="Discription is required" />
+    </div>
+
+    <div class="col-md-5">
+        <label class=" text-black">Photo</label>
+        <input #form  (change)="upload($event)" type="file" 
+           class="col-md-3 custom-file-input form-control" required="Photo is required" />
+    </div>
+
+    <div class="form-row mt-2">
+        <button type="submit" (click)="addProperty()"
+            [disabled]="!model.description || !model.price || !model.photo"
+            class="col-md-5 btn shadow-lg btn-primary">
+            Save
+        </button>
+        <input type="reset" value="Cancel" class="col-md-5 btn btn-warning shadow-lg offset-2" />
+    </div>
+
+</div>

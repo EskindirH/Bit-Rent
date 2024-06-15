@@ -1,0 +1,152 @@
+<header>
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom boxshadow mb-3 px-3 py-2">
+    <a class="navbar-brand font-large" routerLink="">
+      {{title}}
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarcollapse"
+      aria-controls="navbarcollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" id="navbarcollapse">
+      <ul class="navbar-nav ml-auto ">
+        <li class="nav-item" *ngIf="Email">
+          <a routerLink="/login" (click)="logout()" class="nav-link m-1">Logout {{Email}}</a>
+        </li>
+
+        <li class="nav-item " *ngIf="!Email">
+          <a type="button" routerLink="/login" routerLinkActive="active"  class="nav-link m-1">Login</a>
+        </li>
+        <li class="nav-item " *ngIf="!Email">
+          <a type="button" (click)="loadDepts()" class="nav-link m-1" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop2">Register</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav flex-grow-1" *ngIf="Email">
+        <li class="nav-item ">
+          <a routerLinkActive="active" routerLink="/home" class="nav-link m-1 ">Home</a>
+        </li>
+        <li class="nav-item ">
+          <a routerLinkActive="active" routerLink="/api/property" class="nav-link m-1 ">Property</a>
+        </li>
+        
+        <li class="nav-item dropdown nav-fill m-1">
+          <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdownMenuLink"
+            data-bs-toggle="dropdown" aria-controls="navbarDropdownMenuLink" aria-haspopup="true" aria-expanded="false">
+            Manage
+          </a>
+          <div class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" routerLink="/api/company">Company</a>
+            <a class="dropdown-item" routerLink="/api/department/index">Department</a>
+            <a class="dropdown-item" routerLink="/api/employee">Employee</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+<router-outlet ></router-outlet>
+
+
+<div class="modal fade " id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered ">
+    <div class="modal-content bg-light">
+      <div class="modal-header bg-primary">
+        <p class="modal-title h3 " id="staticBackdropLabel">{{ModalTitle}}</p>
+
+        <button type="button" class="btn-close" (click)="closeClick()" data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body ">
+        <app-register (notify)="notificationHandler($event)" [webAppUser]="webAppUser"
+          *ngIf="UserRegisterComponent"></app-register>
+          
+        <div *ngIf="errMsg">There is a problem with the service. Please try again later.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="align-bottom small pt4 mt-5 mb-0" style="background-color:#161414; color:aliceblue">
+  <div class="container-fluid text-center mb-0 text-md-left">
+      <div class="row">
+          <div class="col-md-5  mt-3">
+              <h5 class="text-uppercase">Go Social</h5>                    
+              
+              <ul class="list-unstyled align-items-center">
+                  <li>
+                      <a href="#"><img width="40" src="/assets/icon_facebook.png" /></a><br />
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://www.linkedin.com/in/eskindir-haileliul-412136244" ><img width="40" src="/assets/linkedin.png" /></a>
+                  </li>
+              </ul>
+          </div>
+          <hr class="clearfix w-100 d-md-none pb-3 " />
+          <div class="col-md-3 mb-md-0 mt-3 mb-3">
+              <h5 class="text-uppercase">Services</h5>
+              <ul class="list-unstyled">
+                  <li class="nav-item">
+                      <a href="#">Service 1</a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="#">Service 2</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#">Service 3</a>
+                </li>
+              </ul>
+          </div>
+          <div class="col-md-2 mb-md-0 mt-3 mb-3">
+              <h5 class="text-uppercase">Links</h5>
+              <ul class="list-unstyled">
+                  <li class="nav-link">
+                      <a href="#">Link 1</a>
+                  </li>
+                  <li class="nav-link">
+                      <a href="#">Link 2</a>
+                  </li>
+                  <li class="nav-link">
+                      <a href="#">Link 3</a>
+                  </li>
+              </ul>
+          </div>
+          <div class="col-md-2 mb-4 mt-4">
+
+              <!-- Form -->
+              <form class="form-inline">
+                  <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search"
+                         aria-label="Search">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+              </form>
+              <!-- Form -->
+
+          </div>
+      </div>
+  </div>
+
+
+  <hr class="p-0 bg-light w-100"/>
+  <div class="container-fluid"> 
+      <div class="row py-2 ">
+          <div class="col-sm-1 offset-2">
+              <a href="#">Feedback</a>
+          </div>
+          <div class="col-sm-1">
+              <a href="#">Contact Us</a>
+          </div>
+          <div class="col-sm-2">
+              <a href="#">Terms of use</a>
+          </div>
+          <div class="col-sm-2 offset-4">
+              <p class="h6" style="color:sandybrown;">Bit Tech</p>
+              &copy;
+              <a href="#" class="text-white">Bit Rent</a>
+          </div>
+      </div>
+  </div>
+
+</footer>
